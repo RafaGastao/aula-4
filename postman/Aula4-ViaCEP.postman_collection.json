@@ -1,0 +1,319 @@
+{
+  "info": {
+    "name": "Aula 4 - Integracao ViaCEP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection para testar o CRUD de produtos e a integracao com a API ViaCEP."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Aula 4 - Disponibilidade positiva",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/p1?cep=08773380",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200\", function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Retorna true\", function () {",
+              "  pm.expect(pm.response.json()).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aula 4 - Disponibilidade negativa",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/p1?cep=50030000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "50030000"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200\", function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Retorna false\", function () {",
+              "  pm.expect(pm.response.json()).to.eql(false);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aula 4 - CEP invalido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/p1?cep=123",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "123"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 400\", function () {",
+              "  pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Retorna mensagem de erro\", function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.message).to.be.a(\"string\");",
+              "  pm.expect(body.message.toLowerCase()).to.include(\"cep\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aula 4 - Produto inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/produto-inexistente?cep=08773380",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "availability",
+            "produto-inexistente"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 404\", function () {",
+              "  pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar produtos ativos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cadastrar produto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Produto Postman\",\n  \"price\": 9900,\n  \"category\": \"testes\",\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/product",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Atualizar produto",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"p1\",\n  \"name\": \"Football Jersey Atualizada\",\n  \"price\": 5500,\n  \"category\": \"clothes\",\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/product",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar por categoria",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/endpoint1?categoryAsParam=electronics",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "endpoint1"
+          ],
+          "query": [
+            {
+              "key": "categoryAsParam",
+              "value": "electronics"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/endpoint2/p1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "endpoint2",
+            "p1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Top 5 por preco",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/endpoint3/top5byprice",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "endpoint3",
+            "top5byprice"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Inativar produto",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/p20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "p20"
+          ]
+        }
+      }
+    }
+  ]
+}
